@@ -28,8 +28,7 @@ router.post("/register", async (req, res, next) => {
     );
     res.cookie("token", token, { maxAge: 86400 * 1000, httpOnly: true }); // ms
     res.json({
-      ...user.dataValues,
-      token,
+      ...user.dataValues
     });
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
@@ -67,8 +66,7 @@ router.post("/login", async (req, res, next) => {
       );
       res.cookie("token", token, { maxAge: 86400 * 1000, httpOnly: true }); // ms
       res.json({
-        ...user.dataValues,
-        token,
+        ...user.dataValues
       });
     }
   } catch (error) {
@@ -77,7 +75,7 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.delete("/logout", (req, res, next) => {
-  res.clearCookie('token');
+  res.clearCookie('token', {httpOnly: true});
   res.sendStatus(204);
 });
 
