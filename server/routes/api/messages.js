@@ -14,7 +14,7 @@ router.post("/", async (req, res, next) => {
     // if we already know conversation id, we can save time and just add it to message and return
     // * need to check if req.user is the owner of conversation to avoid security issue
     if (conversationId) {
-      let isOwner = await Conversation.checkConversationOwner(
+      const isOwner = await Conversation.checkConversationOwner(
         conversationId,
         senderId
       );
@@ -28,7 +28,7 @@ router.post("/", async (req, res, next) => {
         return res.json({ message, sender });
       } else {
         return res
-          .status(404)
+          .status(403)
           .json({ error: "Can not find this conversation!" });
       }
     }
