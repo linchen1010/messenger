@@ -12,9 +12,25 @@ router.post("/", async (req, res, next) => {
     const { recipientId, text, conversationId, sender } = req.body;
 
     // if we already know conversation id, we can save time and just add it to message and return
+    // * need to check if req.user is the owner of conversation to avoid security issue
     if (conversationId) {
-      const message = await Message.create({ senderId, text, conversationId });
-      return res.json({ message, sender });
+      let isOwner = await Conversation.checkConversationOwner(
+        conversationId,
+        senderId
+      );
+
+      if (isOwner) {
+        const message = await Message.create({
+          senderId,
+          text,
+          conversationId,
+        });
+        return res.json({ message, sender });
+      } else {
+        return res
+          .status(404)
+          .json({ error: "Can not find this conversation!" });
+      }
     }
     // if we don't have conversation id, find a conversation to make sure it doesn't already exist
     let conversation = await Conversation.findConversation(

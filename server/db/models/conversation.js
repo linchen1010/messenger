@@ -22,4 +22,20 @@ Conversation.findConversation = async function (user1Id, user2Id) {
   return conversation;
 };
 
+// check ownership of conversation given conversation id and user id
+
+Conversation.checkConversationOwner = async function(conversationId, userId) {
+  return await Conversation.findOne({
+    where: {
+      id: {
+        [Op.eq]: conversationId
+      },
+      [Op.or]: {
+        user1Id: userId,
+        user2Id: userId,
+      }
+    }
+  })
+}
+
 module.exports = Conversation;
