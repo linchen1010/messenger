@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Typography } from "@material-ui/core";
+import React, { useState, useCallback, useEffect } from "react";
+import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -18,6 +18,11 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
+  unreadText: {
+    fontWeight: "bolder",
+    fontSize: 12,
+    letterSpacing: -0.17,
+  },
   notification: {
     height: 20,
     width: 20,
@@ -32,6 +37,18 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     borderRadius: 10,
   },
+  unreadBuble: {
+    marginTop: "auto",
+    marginBottom: "auto",
+    marginRight: 30,
+    backgroundColor: "#3f92FF",
+  },
+  badgeText: {
+    fontFamily: "sans-serif",
+    fontSize: 12,
+    fontWeight: "bolder",
+    padding: "auto",
+  },
 }));
 
 const ChatContent = (props) => {
@@ -40,16 +57,42 @@ const ChatContent = (props) => {
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
 
+  const [unreadMsgCount, setUnreadMsgCount] = useState(0);
+
+  const countUnreadMsg = useCallback(() => {
+    let unreadCount = 0;
+    for (let message of conversation.messages) {
+      if (!message.read && message.senderId === otherUser.id) {
+        unreadCount++;
+      }
+    }
+    setUnreadMsgCount(unreadCount);
+  });
+
+  useEffect(() => {
+    countUnreadMsg();
+  }, [countUnreadMsg]);
+
   return (
     <Box className={classes.root}>
       <Box>
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
+        <Typography
+          className={
+            unreadMsgCount === 0 ? classes.previewText : classes.unreadText
+          }
+        >
           {latestMessageText}
         </Typography>
       </Box>
+      <Badge
+        badgeContent={unreadMsgCount}
+        color="primary"
+        className={classes.unreadBuble}
+        classes={{ badge: classes.badgeText }}
+      ></Badge>
     </Box>
   );
 };
