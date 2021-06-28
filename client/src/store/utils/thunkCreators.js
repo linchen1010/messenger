@@ -68,6 +68,15 @@ export const fetchConversations = () => async (dispatch) => {
     console.error(error);
   }
 };
+// update unread message to read in a conversation
+export const updateUnreadConversation = (body) => async () => {
+  try {
+    const data = await axios.put("/api/conversations/updateUnread", body);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const saveMessage = async (body) => {
   const { data } = await axios.post("/api/messages", body);
