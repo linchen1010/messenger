@@ -32,7 +32,7 @@ async function seed() {
     conversationId: santaigoConvo.id,
     senderId: santiago.id,
     text: "Where are you from?",
-    isRead: false,
+    Read: false,
   });
   await Message.create({
     conversationId: santaigoConvo.id,

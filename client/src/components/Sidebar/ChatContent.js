@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -53,25 +53,25 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatContent = (props) => {
   const classes = useStyles();
-
-  const { conversation } = props;
+  const { conversation, activeConversation } = props;
   const { latestMessageText, otherUser } = conversation;
 
   const [unreadMsgCount, setUnreadMsgCount] = useState(0);
-
-  const countUnreadMsg = useCallback(() => {
+  const countUnreadMsg = () => {
     let unreadCount = 0;
-    for (let message of conversation.messages) {
-      if (!message.read && message.senderId === otherUser.id) {
-        unreadCount++;
+    // count unread if it is not active conversation
+    if (activeConversation !== otherUser.username)
+      for (let message of conversation.messages) {
+        if (!message.read && message.senderId === otherUser.id) {
+          unreadCount++;
+        }
       }
-    }
     setUnreadMsgCount(unreadCount);
-  });
+  };
 
   useEffect(() => {
     countUnreadMsg();
-  }, [countUnreadMsg]);
+  }, [conversation, activeConversation]);
 
   return (
     <Box className={classes.root}>

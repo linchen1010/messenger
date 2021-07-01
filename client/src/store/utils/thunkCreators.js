@@ -5,9 +5,9 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  updateUnreadToRead,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
-
 
 // USER THUNK CREATORS
 
@@ -69,10 +69,10 @@ export const fetchConversations = () => async (dispatch) => {
   }
 };
 // update unread message to read in a conversation
-export const updateUnreadConversation = (body) => async () => {
+export const updateUnreadConversation = (body) => async (dispatch) => {
   try {
-    const data = await axios.put("/api/conversations/updateUnread", body);
-    return data;
+    await axios.put("/api/conversations/updateUnread", body);
+    dispatch(updateUnreadToRead(body.conversationId));
   } catch (error) {
     console.log(error);
   }

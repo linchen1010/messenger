@@ -88,7 +88,7 @@ router.put("/updateUnread", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const { conversationId, senderId } = req.body;
-    const message = await Message.update(
+    await Message.update(
       { read: true },
       {
         where: {
@@ -97,7 +97,7 @@ router.put("/updateUnread", async (req, res, next) => {
         },
       }
     );
-    res.json(message);
+    res.sendStatus(200);
   } catch (error) {
     next(error);
   }
