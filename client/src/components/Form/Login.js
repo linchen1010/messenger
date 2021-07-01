@@ -48,7 +48,7 @@ const Login = (props) => {
             container
             direction="column"
             alignItems="center"
-            style={{ paddingTop: 80 }}
+            className={classes.formField}
           >
             <form onSubmit={handleLogin}>
               <Grid item xs={12}>

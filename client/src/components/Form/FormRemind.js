@@ -12,16 +12,16 @@ export default function FormRemind({ remindText, btnText, path }) {
       <Grid item xs={0} sm={4}></Grid>
       <Grid item xs={8} sm={4}>
         <Typography color="textSecondary" className={classes.remindText}>
-          {`${remindText}`}
+          {remindText}
         </Typography>
       </Grid>
       <Grid item xs={4} sm={4}>
         <Button
           className={classes.btnAction}
           color="primary"
-          onClick={() => history.push(`${path}`)}
+          onClick={() => history.push(path)}
         >
-          {`${btnText}`}
+          {btnText}
         </Button>
       </Grid>
     </Grid>

@@ -1,12 +1,15 @@
 import { makeStyles } from "@material-ui/styles";
 
-export const formStyle = makeStyles({
+export const formStyle = makeStyles((theme) => ({
   root: {
     height: "100vh",
     display: "flex",
   },
   form: {
     textAlign: "center",
+  },
+  formField: {
+    paddingTop: 80,
   },
   btnSubmit: {
     marginTop: 40,
@@ -49,4 +52,4 @@ export const formStyle = makeStyles({
     textAlign: "center",
     opacity: "100%",
   },
-});
+}));
