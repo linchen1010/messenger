@@ -60,7 +60,7 @@ const Login = (props) => {
             <form onSubmit={handleRegister}>
               <Grid item xs={12}>
                 <Typography align="left" variant="h6">
-                  <b style={{ paddingRight: 80 }}>Create an account.</b>
+                  <b className={classes.headerContent}>Create an account.</b>
                 </Typography>
               </Grid>
               <Grid item xs={12}>

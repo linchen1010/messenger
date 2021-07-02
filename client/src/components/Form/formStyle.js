@@ -5,6 +5,9 @@ export const formStyle = makeStyles((theme) => ({
     height: "100vh",
     display: "flex",
   },
+  headerContent: {
+    paddingRight: 80,
+  },
   form: {
     textAlign: "center",
   },
