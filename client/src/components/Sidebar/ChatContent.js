@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: -0.17,
   },
   unreadText: {
-    fontWeight: "bolder",
+    fontWeight: theme.typography.fontWeightBold,
     fontSize: 12,
     letterSpacing: -0.17,
   },
