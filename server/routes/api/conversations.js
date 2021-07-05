@@ -82,4 +82,25 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.put("/updateUnread", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { conversationId, senderId } = req.body;
+    await Message.update(
+      { read: true },
+      {
+        where: {
+          conversationId,
+          senderId,
+        },
+      }
+    );
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
