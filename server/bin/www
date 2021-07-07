@@ -12,7 +12,8 @@ const http = require("http");
 const db = require("../db");
 const onlineUsers = require("../onlineUsers");
 const { Conversation } = require("../db/models");
-
+const { User } = require("../db/models");
+const socketAuth = require("socketio-auth");
 /**
  * Get port from environment and store in Express.
  */
@@ -31,6 +32,25 @@ const server = http.createServer(app);
  */
 
 const io = require("socket.io")(server);
+
+/**
+ * Authenticate socket connection from login, see if user who creates connection have already registered
+ * Only authenticated users could open socket connection
+ */
+const authenticate = async (socket, data, callback) => {
+  const { username } = data;
+  try {
+    const user = await User.findOne({
+      where: {
+        username: username,
+      },
+    });
+    console.log(user);
+    callback(null, user && user.username === username);
+  } catch (error) {
+    callback(error);
+  }
+};
 
 io.on("connection", (socket) => {
   socket.on("go-online", async (id) => {
@@ -57,6 +77,10 @@ io.on("connection", (socket) => {
       socket.broadcast.emit("remove-offline-user", id);
     }
   });
+});
+
+socketAuth(io, {
+  authenticate,
 });
 
 sessionStore
