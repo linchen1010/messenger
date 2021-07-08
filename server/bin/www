@@ -11,7 +11,9 @@ const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
 const onlineUsers = require("../onlineUsers");
-
+const { Conversation } = require("../db/models");
+const { User } = require("../db/models");
+const socketAuth = require("socketio-auth");
 /**
  * Get port from environment and store in Express.
  */
@@ -31,29 +33,53 @@ const server = http.createServer(app);
 
 const io = require("socket.io")(server);
 
+/**
+ * Authenticate socket connection from login, see if user who creates connection have already registered
+ * Only authenticated users could open socket connection
+ */
+const authenticate = async (socket, data, callback) => {
+  const { username } = data;
+  try {
+    const user = await User.findOne({
+      where: {
+        username: username,
+      },
+    });
+    callback(null, user && user.username === username);
+  } catch (error) {
+    callback(error);
+  }
+};
+
 io.on("connection", (socket) => {
-  socket.on("go-online", (id) => {
-    if (!onlineUsers.includes(id)) {
-      onlineUsers.push(id);
+  socket.on("go-online", async (id) => {
+    if (!onlineUsers.id) {
+      onlineUsers[id] = socket.id;
     }
-    // send the user who just went online to everyone else who is already online
-    socket.broadcast.emit("add-online-user", id);
+    const userContacts = await Conversation.getUserContacts(id);
+    for (let contactId of userContacts) {
+      if (onlineUsers[contactId])
+        socket.to(onlineUsers[contactId]).emit("add-online-user", id);
+    }
   });
 
   socket.on("new-message", (data) => {
-    socket.broadcast.emit("new-message", {
+    socket.to(onlineUsers[data.recipientId]).emit("new-message", {
       message: data.message,
       sender: data.sender,
     });
   });
 
   socket.on("logout", (id) => {
-    if (onlineUsers.includes(id)) {
-      userIndex = onlineUsers.indexOf(id);
-      onlineUsers.splice(userIndex, 1);
+    if (onlineUsers[id]) {
+      delete onlineUsers[id];
       socket.broadcast.emit("remove-offline-user", id);
     }
   });
+});
+
+socketAuth(io, {
+  authenticate,
 });
 
 sessionStore
