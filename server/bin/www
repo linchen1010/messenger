@@ -45,7 +45,6 @@ const authenticate = async (socket, data, callback) => {
         username: username,
       },
     });
-    console.log(user);
     callback(null, user && user.username === username);
   } catch (error) {
     callback(error);
